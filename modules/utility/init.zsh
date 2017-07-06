@@ -101,18 +101,6 @@ else
   fi
 fi
 
-alias l='ls -1A'         # Lists in one column, hidden files.
-alias ll='ls -lh'        # Lists human readable sizes.
-alias lr='ll -R'         # Lists human readable sizes, recursively.
-alias la='ll -A'         # Lists human readable sizes, hidden files.
-alias lm='la | "$PAGER"' # Lists human readable sizes, hidden files through pager.
-alias lx='ll -XB'        # Lists sorted by extension (GNU only).
-alias lk='ll -Sr'        # Lists sorted by size, largest last.
-alias lt='ll -tr'        # Lists sorted by date, most recent last.
-alias lc='lt -c'         # Lists sorted by date, most recent last, shows change time.
-alias lu='lt -u'         # Lists sorted by date, most recent last, shows access time.
-alias sl='ls'            # I often screw this up.
-
 # Grep
 if zstyle -t ':prezto:module:utility:grep' color; then
   export GREP_COLOR='37;45'           # BSD.
@@ -129,17 +117,23 @@ elif [[ "$OSTYPE" == cygwin* ]]; then
   alias pbcopy='tee > /dev/clipboard'
   alias pbpaste='cat /dev/clipboard'
 else
-  alias o='xdg-open'
+  alias xo='xdg-open'
+  alias xo.='xdg-open .'
 
   if (( $+commands[xclip] )); then
     alias pbcopy='xclip -selection clipboard -in'
     alias pbpaste='xclip -selection clipboard -out'
+    alias x='xclip'
+    alias xx='xclip -selection clipboard'
+    alias cdxi='echo $PWD | x -i'
+    alias cdxo='cd "$(x -o)"'
   elif (( $+commands[xsel] )); then
     alias pbcopy='xsel --clipboard --input'
     alias pbpaste='xsel --clipboard --output'
   fi
 fi
 
+# useful; commented by scinart.
 alias pbc='pbcopy'
 alias pbp='pbpaste'
 
@@ -159,12 +153,16 @@ fi
 
 alias du='du -kh'
 
-if [[ "$OSTYPE" == (darwin*|*bsd*) ]]; then
-  alias topc='top -o cpu'
-  alias topm='top -o vsize'
+if (( $+commands[htop] )); then
+  alias top=htop
 else
-  alias topc='top -o %CPU'
-  alias topm='top -o %MEM'
+  if [[ "$OSTYPE" == (darwin*|*bsd*) ]]; then
+    alias topc='top -o cpu'
+    alias topm='top -o vsize'
+  else
+    alias topc='top -o %CPU'
+    alias topm='top -o %MEM'
+  fi
 fi
 
 # Miscellaneous

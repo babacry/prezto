@@ -18,6 +18,8 @@ zstyle -s ':prezto:module:git:log:oneline' format '_git_log_oneline_format' \
 zstyle -s ':prezto:module:git:log:brief' format '_git_log_brief_format' \
   || _git_log_brief_format='%C(green)%h%C(reset) %s%n%C(blue)(%ar by %an)%C(red)%d%C(reset)%n'
 
+_git_log_oyhy_format='%C(bold)Commit:%C(reset) %C(green)%h%C(bold) by:%C(reset) %C(cyan)%an %C(bold)%C(blue)(%ar)%C(reset) %C(red)%d%n%+B'
+
 # Status
 zstyle -s ':prezto:module:git:status:ignore' submodules '_git_status_ignore_submodules' \
   || _git_status_ignore_submodules='none'
