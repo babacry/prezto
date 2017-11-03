@@ -4,6 +4,9 @@ unalias diffu
 unalias e
 unalias type
 unalias sa
+unalias rsync
+# rsync completion not working unless unaliased, I think it is a bug.
+# No time debugging now, just disable the alias.
 
 export MAN_POSIXLY_CORRECT=0
 
