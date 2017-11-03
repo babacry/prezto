@@ -132,23 +132,18 @@ function rfile {
 }
 
 function alias_unwrapper {
-    local cmd="$1"
-    if [[ ! -x "$cmd" ]]; then
-       echo "$cmd not found"; return;
+    local sudo="$1"
+    if [[ ! -x "$sudo" ]]; then
+       echo "$sudo not found"; return;
     fi
-    shift
-    if [ ${aliases[$1]} ]; then
-	x=${aliases[$1]};
-	if [ ${x%%\ *} = "nocorrect" ]; then
-	    $cmd ${aliases[$1]#*\ } ${@:2};
-	elif [ ${x%%\ *} = "noglob" ]; then
-	    $cmd ${aliases[$1]#*\ } ${@:2};
-	else
-	    $cmd ${aliases[$1]} ${@:2}
-	fi;
-    else
-	$cmd $@;
-    fi;
+    local cmd=(${(s: :)aliases[$2]}); # let cmd be array of command and arguments
+    (($#cmd)) || cmd=($2)             # if cmd has no aliases, use array of a single element
+    while (( $#cmd > 0 )) && [[ $cmd[1] == "nocorrect" || $cmd[1] == "noglob" ]]; do
+        shift cmd;         # remove beginning garbage
+    done
+    local args=(${cmd:1}); # origin params of alias
+    args+=(${@:3})         # additional params after alias
+    ${cmd[1]} $args        # unwrap the args array
 }
 
 
