@@ -1,0 +1,182 @@
+# unalias utility
+unalias _
+unalias diffu
+unalias e
+unalias type
+unalias sa
+
+export MAN_POSIXLY_CORRECT=0
+
+alias -g silent="> /dev/null 2>&1"
+
+# sudo
+
+alias sudo='sudo '
+compdef _=sudo
+
+# zypper
+
+alias z='zypper'
+alias zin='sudo zypper install'
+alias zse='sudo zypper search'
+alias zref='sudo zypper refresh'
+
+# utils
+
+alias bc='octave-cli -q'
+alias dnt='date +%Y%m%d.%H%M%S'
+alias ec='emacsclient -nc' # --create-frame --no-wait
+alias ic='iconv -f gbk -t utf-8'
+alias icr='iconv -f utf-8 -t gbk'
+alias ping1='ping -c 1 -w 2'
+alias rm="${aliases[rm]:-rm} --interactive=once"
+
+## tmux
+
+alias tat='tmux attach-session -t'
+alias tls='tmux ls'
+alias tns='tmux new-session -s'
+
+# cd
+alias cd..='cd ..'
+alias q='exit'
+alias dirs='dirs -v'
+alias ...='../..'
+alias ....='../../../'
+alias .....='../../../../'
+alias ......='../../../../../'
+
+# head tail find
+for ((i=1;i<10;i++)); do
+    eval "alias h$i='head -n $i'"
+    eval "alias t$i='tail -n $i'"
+    eval "alias find$i='find . -maxdepth $i -iname'"
+done
+
+# ls
+alias l="command ${aliases[ls]:-ls}"
+alias ls="${aliases[ls]:-ls} -hAF" # --almost-all --classify
+alias ll="${aliases[ls]:-ls} -hlAF" # --human-readable long-listing-format --almost-all --classify
+alias /='l'  		   # I often mistype l with /;
+alias //='ll'
+alias r='l'                # I often mistype l with r too.
+alias rp='builtin r'       # builtin r is repeat, a.k.a, rp
+
+# git
+alias gRa='git remote add'
+alias gRl='git remote --verbose'
+alias gRm='git remote rename'
+alias gRs='git remote show'
+alias gRx='git remote rm'
+alias gb='git branch'
+alias gbL='git branch -av'
+alias gbM='git branch -M'
+alias gbS='git show-branch -a'
+alias gbX='git branch -D'
+alias gbc='git checkout -b'
+alias gbl='git branch -v'
+alias gbm='git branch -m'
+alias gbs='git show-branch'
+alias gbx='git branch -d'
+alias gc='git commit'
+alias gcO='git checkout --patch'
+alias gca='git commit --amend'
+alias gcb='git checkout'
+alias gcm='git commit --message'
+alias gco='git checkout'
+alias gcp='git cherry-pick --ff'
+alias gcv='git commit --verbose'
+alias gf='git fetch'
+alias gfc='git clone'
+alias gfm='git pull'
+alias gfr='git fetch --recurse-submodules'
+alias giD='git diff --no-ext-diff --cached --word-diff'
+alias giX='git rm -rf --cached'
+alias gia='git add'
+alias gid='git diff --no-ext-diff --cached'
+alias gir='git reset -- '
+alias giu='git add --update'
+alias gix='git rm -r --cached'
+alias gl='git log --topo-order --graph --pretty=format:${_git_log_oyhy_format}'
+alias glb='git log --topo-order --pretty=format:${_git_log_brief_format}'
+alias glc='git shortlog --summary --numbered'
+alias gld='git log --topo-order --stat --patch --full-diff --pretty=format:${_git_log_oyhy_format}'
+alias glg='git log --topo-order --all --graph --pretty=format:${_git_log_oyhy_format}'
+alias gls='git log --topo-order --graph --stat --pretty=format:${_git_log_oyhy_format}'
+alias gp='git push'
+alias gs='git status --ignore-submodules=${_git_status_ignore_submodules} --short'
+alias gwD='git diff --word-diff'
+alias gwR='git reset --hard'
+alias gwS='git status --ignore-submodules=${_git_status_ignore_submodules}'
+alias gwd='git diff'
+alias gwr='git checkout --'
+alias gws='git status --ignore-submodules=${_git_status_ignore_submodules} --short'
+alias gwss='git status --ignore-submodules=${_git_status_ignore_submodules} --short --untracked-files=no'
+
+# functions
+
+function first_exist {
+    while [[ "$#" -gt 0 ]]; do
+	if [[ -f "$1" ]]; then
+	    echo "$1";
+	    return 0;
+	fi
+	shift
+    done
+    echo "";
+    return 0;
+}
+
+function rfile {
+    echo `whoami`@`hostname -I | awk '{print $1}'`:`readlink -f $1`;
+}
+
+function alias_unwrapper {
+    local cmd="$1"
+    if [[ ! -x "$cmd" ]]; then
+       echo "$cmd not found"; return;
+    fi
+    shift
+    if [ ${aliases[$1]} ]; then
+	x=${aliases[$1]};
+	if [ ${x%%\ *} = "nocorrect" ]; then
+	    $cmd ${aliases[$1]#*\ } ${@:2};
+	elif [ ${x%%\ *} = "noglob" ]; then
+	    $cmd ${aliases[$1]#*\ } ${@:2};
+	else
+	    $cmd ${aliases[$1]} ${@:2}
+	fi;
+    else
+	$cmd $@;
+    fi;
+}
+
+
+function _ {
+    local SUDO=/usr/bin/sudo
+    alias_unwrapper $SUDO $@
+}
+
+function pp {
+    local PARALLEL=/usr/bin/parallel
+    alias_unwrapper $PARALLEL $@
+}
+
+function watch {
+    local WATCH=$(first_exist "/usr/bin/watch" "/usr/local/bin/watch")
+    alias_unwrapper $WATCH $@
+}
+
+function swap {
+    if [[ $# -ne 2 ]]; then
+	echo "Usage: swap file1 file2"
+    elif [[ ! -e $1 ]]; then
+        echo $1 not exist
+    elif [[ ! -e $2 ]]; then
+	echo $2 not exist
+    else
+	local TMP=$(mktemp -u .XXXXXXXX)
+	[[ -f $TMP ]] && { echo "TMP-file exists, try again"; return; }
+	mv "$1" "$tmpfile" && mv "$2" "$1" && mv "$tmpfile" "$2"
+    fi
+}
