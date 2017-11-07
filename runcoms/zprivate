@@ -149,6 +149,10 @@ function alias_unwrapper {
     ${cmd[1]} $args        # unwrap the args array
 }
 
+function pc {
+    local PROXYCHAINS4=/usr/bin/proxychains4
+    alias_unwrapper $PROXYCHAINS4 $@
+}
 
 function _ {
     local SUDO=/usr/bin/sudo
@@ -156,7 +160,7 @@ function _ {
 }
 
 function pp {
-    local PARALLEL=/usr/bin/parallel
+    local PARALLEL=$(first_exist "/usr/bin/parallel" "/usr/local/bin/parallel")
     alias_unwrapper $PARALLEL $@
 }
 
