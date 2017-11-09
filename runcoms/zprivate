@@ -1,10 +1,11 @@
 # unalias utility
-unalias _
-unalias diffu
-unalias e
-unalias type
-unalias sa
-unalias rsync
+(( ${+aliases[_]}     )) && unalias _
+(( ${+aliases[diffu]} )) && unalias diffu
+(( ${+aliases[e]}     )) && unalias e
+(( ${+aliases[type]}  )) && unalias type
+(( ${+aliases[sa]}    )) && unalias sa
+(( ${+aliases[rsync]} )) && unalias rsync
+
 # rsync completion not working unless unaliased, I think it is a bug.
 # No time debugging now, just disable the alias.
 
@@ -146,7 +147,7 @@ function alias_unwrapper {
     done
     local args=(${cmd:1}); # origin params of alias
     args+=(${@:3})         # additional params after alias
-    ${cmd[1]} $args        # unwrap the args array
+    $sudo $cmd[1] $args        # unwrap the args array
 }
 
 function pc {
