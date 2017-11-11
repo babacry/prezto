@@ -22,8 +22,11 @@ compdef _=sudo
 
 alias z='zypper'
 alias zin='sudo zypper install'
+alias zlu='sudo zypper list-updates'
+alias zlp='sudo zypper list-patches'
 alias zse='sudo zypper search'
 alias zref='sudo zypper refresh'
+alias zrm='sudo zypper remove'
 
 # utils
 
@@ -180,6 +183,6 @@ function swap {
     else
 	local TMP=$(mktemp -u .XXXXXXXX)
 	[[ -f $TMP ]] && { echo "TMP-file exists, try again"; return; }
-	mv "$1" "$tmpfile" && mv "$2" "$1" && mv "$tmpfile" "$2"
+	mv "$1" "$TMP" && mv "$2" "$1" && mv "$TMP" "$2"
     fi
 }
