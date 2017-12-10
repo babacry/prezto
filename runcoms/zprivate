@@ -14,8 +14,6 @@ export MAN_POSIXLY_CORRECT=0
 alias -g silent="> /dev/null 2>&1"
 
 # sudo
-
-alias sudo='sudo '
 compdef _=sudo
 
 # zypper
@@ -159,6 +157,11 @@ function pc {
 }
 
 function _ {
+    local SUDO=/usr/bin/sudo
+    alias_unwrapper $SUDO $@
+}
+
+function sudo {
     local SUDO=/usr/bin/sudo
     alias_unwrapper $SUDO $@
 }
