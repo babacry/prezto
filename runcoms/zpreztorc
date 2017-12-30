@@ -229,5 +229,5 @@ zstyle ':prezto:module:terminal' auto-title 'yes'
 # behavior.
 # zstyle ':prezto:module:utility' safe-ops 'yes'
 
-zstyle ':prezto:module:prompt' theme 'oyhy'
+zstyle ':prezto:module:prompt' theme 'baba'
 zstyle ':prezto:module:utility' safe-ops 'no'

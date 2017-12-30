@@ -34,7 +34,7 @@ alias ec='emacsclient -nc' # --create-frame --no-wait
 alias ic='iconv -f gbk -t utf-8'
 alias icr='iconv -f utf-8 -t gbk'
 alias ping1='ping -c 1 -w 2'
-alias rm="${aliases[rm]:-rm} --interactive=once"
+# alias rm="${aliases[rm]:-rm} --interactive=once"
 
 ## tmux
 
@@ -189,3 +189,13 @@ function swap {
 	mv "$1" "$TMP" && mv "$2" "$1" && mv "$TMP" "$2"
     fi
 }
+
+## baba section
+
+ITERM_2_INTEGRATION="${HOME}/.iterm2_shell_integration.zsh"
+
+[[ -f $ITERM_2_INTEGRATION ]] && source $ITERM_2_INTEGRATION
+
+PATH="$HOME/anaconda3/bin:/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH" 
+

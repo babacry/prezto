@@ -8,23 +8,23 @@
 # Load dependencies.
 pmodload 'helper'
 
-function prompt_sorin_pwd {
+function prompt_cloud_pwd {
   local pwd="${PWD/#$HOME/~}"
 
   if [[ "$pwd" == (#m)[/~] ]]; then
-    _prompt_sorin_pwd="$MATCH"
+    _prompt_cloud_pwd="$MATCH"
     unset MATCH
   else
-    _prompt_sorin_pwd="${${${(@j:/:M)${(@s:/:)pwd}##.#?}:h}%/}/${pwd:t}"
+    _prompt_cloud_pwd="${${${(@j:/:M)${(@s:/:)pwd}##.#?}:h}%/}/${pwd:t}"
   fi
 }
 
-function prompt_sorin_precmd {
+function prompt_cloud_precmd {
   setopt LOCAL_OPTIONS
   unsetopt XTRACE KSH_ARRAYS
 
   # Format PWD.
-  prompt_sorin_pwd
+  prompt_cloud_pwd
 
   # Get Git repository information.
   if (( $+functions[git-info] )); then
@@ -32,7 +32,7 @@ function prompt_sorin_precmd {
   fi
 }
 
-function prompt_sorin_setup {
+function prompt_cloud_setup {
   setopt LOCAL_OPTIONS
   unsetopt XTRACE KSH_ARRAYS
   prompt_opts=(cr percent subst)
@@ -41,7 +41,7 @@ function prompt_sorin_setup {
   autoload -Uz add-zsh-hook
 
   # Add hook for calling git-info before each command.
-  add-zsh-hook precmd prompt_sorin_precmd
+  add-zsh-hook precmd prompt_cloud_precmd
 
   # Set editor-info parameters.
   # zstyle ':prezto:module:editor:info:completing' format '%B%F{red}...%f%b'
@@ -55,7 +55,7 @@ function prompt_sorin_setup {
   zstyle ':prezto:module:editor:info:keymap:alternate' format ''
 
   primary_color='cyan'
-  secondary_color='green'
+  secondary_color=220
   prefix='☁'
 
   # Set git-info parameters.
@@ -65,24 +65,26 @@ function prompt_sorin_setup {
   zstyle ':prezto:module:git:info:ahead' format ' %%B%F{yellow}⬆%f%%b'
   zstyle ':prezto:module:git:info:behind' format ' %%B%F{yellow}⬇%f%%b'
   zstyle ':prezto:module:git:info:branch' format ':%%B%F{$primary_color}%b%f%%b'
+  zstyle ':prezto:module:git:info:clean' format ' %F{green}✔%f'
+  zstyle ':prezto:module:git:info:dirty' format ' %F{204}✗%f'
   zstyle ':prezto:module:git:info:commit' format ':%F{green}%.7c%f'
   zstyle ':prezto:module:git:info:deleted' format ' %%B%F{red}✖%f%%b'
-  zstyle ':prezto:module:git:info:modified' format ' %%B%F{blue}✱%f%%b'
+  zstyle ':prezto:module:git:info:modified' format ' %%B%F{cyan}✱%f%%b'
   zstyle ':prezto:module:git:info:position' format ':%F{red}%p%f'
   zstyle ':prezto:module:git:info:renamed' format ' %%B%F{magenta}➜%f%%b'
   zstyle ':prezto:module:git:info:stashed' format ' %%B%F{cyan}✭%f%%b'
   zstyle ':prezto:module:git:info:unmerged' format ' %%B%F{yellow}═%f%%b'
   zstyle ':prezto:module:git:info:untracked' format ' %%B%F{white}◼%f%%b'
   zstyle ':prezto:module:git:info:keys' format \
-    'prompt' ' %%B%F{$secondary_color}[%f%%b%F{blue}git%f$(coalesce "%b" "%p" "%c")%s%%B%F{$secondary_color}]%f%%b' \
-    'rprompt' '%A%B%S%a%d%m%r%U%u'
+    'prompt' ' %%B%F{$secondary_color}[%f%%B%F{224}git%f$(coalesce "%b" "%p" "%c")%s%%B%F{$secondary_color}]%f%%b' \
+    'rprompt' '%A%B%S%a%d%m%r%U%u%C%D'
 
   # Define prompts.
-  # PROMPT='%F{cyan}${_prompt_sorin_pwd}%f${git_info:+${(e)git_info[prompt]}}%(!. %B%F{red}#%f%b.)${editor_info[keymap]} '
-  PROMPT='%B%F{$primary_color}${prefix}%f%b  %B%F{$secondary_color}${_prompt_sorin_pwd}%f%b${git_info:+${(e)git_info[prompt]}}%(!. %B%F{red}#%f%b.)${editor_info[keymap]} '
-  RPROMPT='${editor_info[overwrite]}%(?:: %F{red}⏎%f)${VIM:+" %B%F{green}V%f%b"}${git_info[rprompt]}'
+  # PROMPT='%F{cyan}${_prompt_cloud_pwd}%f${git_info:+${(e)git_info[prompt]}}%(!. %B%F{red}#%f%b.)${editor_info[keymap]} '
+  PROMPT='%B%F{$primary_color}${prefix}%f%b  %B%F{$secondary_color}${_prompt_cloud_pwd}%f%b${git_info:+${(e)git_info[prompt]}}%(!. %B%F{red}#%f%b.)${editor_info[keymap]} '
+  RPROMPT='${editor_info[overwrite]}%(?:: %F{red}⏎%f)${VIM:+" %B%F{green}V%f%b"}${git_info[rprompt]} %B%F{cyan}[%F{$secondary_color}%D{%H:%M:%S}%F{cyan}]%f%b'
   SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
 }
 
-prompt_sorin_setup "$@"
+prompt_cloud_setup "$@"
 
